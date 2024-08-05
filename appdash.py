@@ -3,11 +3,12 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_curve, auc, precision_recall_curve
 
-import scikitplot as skplt
 from joblib import dump, load
 import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.graph_objects as go
 
 categories = ['alt.atheism', 'comp.graphics', 'rec.autos', 'sci.electronics', 'talk.politics.guns']
 
@@ -65,24 +66,32 @@ with st.form("train_model"):
                 st.metric("Train Accuracy", value="{:.2f} %".format(100*accuracy_score(Y_train, Y_train_preds)))
 
             st.markdown("### Confusion Matrix")
-            conf_mat_fig = plt.figure(figsize=(6,6))
-            ax1 = conf_mat_fig.add_subplot(111)
-            skplt.metrics.plot_confusion_matrix(Y_test, Y_test_preds, ax=ax1)
+            conf_mat = confusion_matrix(Y_test, Y_test_preds)
+            conf_mat_fig, ax = plt.subplots(figsize=(6,6))
+            sns.heatmap(conf_mat, annot=True, fmt='d', cmap='Blues', xticklabels=categories, yticklabels=categories, ax=ax)
             st.pyplot(conf_mat_fig, use_container_width=True)
 
         st.markdown("### Classification Report:")
         st.code("=="+classification_report(Y_test, Y_test_preds, target_names=categories))
 
         st.markdown("### ROC & Precision-Recall Curves")
+
+        # ROC Curve
+        fpr, tpr, _ = roc_curve(Y_test, Y_test_probs[:, 1], pos_label=1)
+        roc_auc = auc(fpr, tpr)
+        roc_fig = go.Figure()
+        roc_fig.add_trace(go.Scatter(x=fpr, y=tpr, mode='lines', name=f'AUC = {roc_auc:.2f}'))
+        roc_fig.add_trace(go.Scatter(x=[0, 1], y=[0, 1], mode='lines', line=dict(dash='dash'), name='Random'))
+        roc_fig.update_layout(title='ROC Curve', xaxis_title='False Positive Rate', yaxis_title='True Positive Rate', showlegend=True)
+
+        # Precision-Recall Curve
+        precision, recall, _ = precision_recall_curve(Y_test, Y_test_probs[:, 1], pos_label=1)
+        pr_fig = go.Figure()
+        pr_fig.add_trace(go.Scatter(x=recall, y=precision, mode='lines', name='Precision-Recall Curve'))
+        pr_fig.update_layout(title='Precision-Recall Curve', xaxis_title='Recall', yaxis_title='Precision', showlegend=True)
+
         col1, col2 = st.columns(2, gap="medium")
         with col1:
-            roc_fig = plt.figure(figsize=(6,6))
-            ax1 = roc_fig.add_subplot(111)
-            skplt.metrics.plot_roc(Y_test, Y_test_probs, ax=ax1)
-            st.pyplot(roc_fig, use_container_width=True)
-
+            st.plotly_chart(roc_fig, use_container_width=True)
         with col2:
-            pr_fig = plt.figure(figsize=(6,6))
-            ax1 = pr_fig.add_subplot(111)
-            skplt.metrics.plot_precision_recall(Y_test, Y_test_probs, ax=ax1)
-            st.pyplot(pr_fig, use_container_width=True)
+            st.plotly_chart(pr_fig, use_container_width=True)
