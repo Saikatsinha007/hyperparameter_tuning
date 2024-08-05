@@ -1,8 +1,4 @@
-# requirements.txt
-
-streamlit==1.37.0
-scikit-learn
-joblib==1.2.0
-matplotlib==3.6.2
-seaborn==0.12.1
-plotly==5.10.0
+streamlit>=1.37.0
+scikit-learn>=1.5.1
+scikit-plot>=0.3.7
+matplotlib>=3.6.2
