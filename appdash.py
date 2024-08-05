@@ -2,7 +2,6 @@ import streamlit as st
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 
@@ -10,7 +9,7 @@ import scikitplot as skplt
 from joblib import dump, load
 import matplotlib.pyplot as plt
 
-categories = ['alt.atheism', 'comp.graphics', 'rec.autos', 'sci.electronics', 'talk.politics.guns',]
+categories = ['alt.atheism', 'comp.graphics', 'rec.autos', 'sci.electronics', 'talk.politics.guns']
 
 @st.cache_data
 def load_and_vectorize_dataset():
