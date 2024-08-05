@@ -1,4 +1,11 @@
 
+![Screenshot 2024-08-05 184023](https://github.com/user-attachments/assets/3c3b90d3-e99e-4387-af1d-21335f738147)
+
+
+
+![Screenshot 2024-08-05 184034](https://github.com/user-attachments/assets/268321df-64c4-4ab8-8c27-98ad44a499ec)
+
+
 ## About Random Forest Hyperparameter Tuning Dashboard
 
 This project provides an interactive dashboard for tuning the hyperparameters of a Random Forest classifier using Streamlit. The dashboard allows users to easily adjust various hyperparameters and observe their impact on model performance through visualizations and metrics.
